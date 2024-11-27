@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interfaz Productos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="button">
+                <div class="circle">1</div>
+                <span>Cargar Clientes</span>
+            </div>
+            <div class="button">
+                <div class="circle">2</div>
+                <span>Cargar Pedidos</span>
+            </div>
+            <div class="button">
+                <div class="circle">3</div>
+                <span>Cargar Productos</span>
+            </div>
+            <a href="{{ url_for('volver') }}" class="button">
+                <div class="circle">🔙</div>
+                <span>Volver al Menú</span>
+            </a>
+        </div>
+        <div class="main">
+            <h2>Cargar productos</h2>
+            <form action="{{ url_for('agregar_productos') }}" method="POST" class="product-form">
+                <label for="tamaño">Tamaño:</label>
+                <input type="text" id="tamaño" name="tamaño" required>
+                <label for="material">Material:</label>
+                <input type="text" id="material" name="material" required>
+                <label for="precio">Precio:</label>
+                <input type="number" id="precio" name="precio" required>
+                <input type="submit" value="Agregar">
+            </form>
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar productos...">
+                <button>🔍</button>
+            </div>
+            <h1>Lista de productos:</h1>
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tamaño</th>
+                        <th>Material</th>
+                        <th>Precio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                        <tr>
+                            {% for atributo in producto %}
+                                <td>{{ atributo }}</td>
+                            {% endfor %}
+                            <td>
+                                <form action="{{ url_for('eliminar_productos') }}" method="POST" class="delete-form">
+                                    <input type="hidden" name="ID" value="{{ producto[0] }}">
+                                    <button type="submit" class="delete-button">Eliminar</button>
+                                </form>
+                                <button class="modify-button" onclick="openModifyModal('{{ producto[0] }}', '{{ producto[1] }}', '{{ producto[2] }}', '{{ producto[3] }}')">Modificar</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal para modificar productos -->
+    <div id="modifyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModifyModal()">×</span>
+            <h2>Modificar producto</h2>
+            <form action="{{ url_for('modificar_productos') }}" method="POST">
+                <label for="modal-id">ID:</label>
+                <input type="number" id="modal-id" name="ID" readonly>
+                <label for="modal-tamaño">Tamaño:</label>
+                <input type="text" id="modal-tamaño" name="tamaño" required>
+                <label for="modal-material">Material:</label>
+                <input type="text" id="modal-material" name="material" required>
+                <label for="modal-precio">Precio:</label>
+                <input type="number" id="modal-precio" name="precio" required>
+                <input type="submit" value="Modificar">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModifyModal(id, tamaño, material, precio) {
+            document.getElementById('modifyModal').style.display = 'flex';
+            document.getElementById('modal-id').value = id;
+            document.getElementById('modal-tamaño').value = tamaño;
+            document.getElementById('modal-material').value = material;
+            document.getElementById('modal-precio').value = precio;
+        }
+
+        function closeModifyModal() {
+            document.getElementById('modifyModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

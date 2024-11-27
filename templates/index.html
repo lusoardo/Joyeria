@@ -1,3 +1,37 @@
-<p> Probando Flask </p>
-
-<p>{{nombre}}</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L    u    m    a</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="logo-container">
+        <h1>L   u    m     a</h1>
+        <div class="collarsito">
+            <img src="{{ url_for('static', filename='Imagenes/collarsito.png') }}" height="50px" width="50px">
+        </div>
+    </div>
+        
+    <div class="buttons-container">
+        <div class="button-row">
+            <div class="button-wrapper">
+                <div class="circle">1</div>
+                <a href="{{ url_for('clientes') }}" class="button">Cargar Clientes</a>
+            </div>
+            <div class="button-wrapper">
+                <div class="circle">2</div>
+                <a href="{{ url_for('productos') }}" class="button">Cargar Productos</a>
+            </div>
+        </div>
+        
+        <!-- Botón separado en la segunda fila -->
+        <div class="button-wrapper">
+            <div class="circle">3</div>
+            <a href="{{ url_for('pedidos') }}" class="button">Cargar Pedidos</a>
+        </div>
+    </div>
+</body>
+</html>

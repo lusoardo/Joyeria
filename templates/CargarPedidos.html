@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargar Pedidos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <a href="{{ url_for('clientes') }}" class="button">
+                <div class="circle">1</div>
+                <span>Cargar Clientes</span>
+            </a>
+            <a href="{{ url_for('productos') }}" class="button">
+                <div class="circle">2</div>
+                <span>Cargar Productos</span>
+            </a>
+            <a href="{{ url_for('pedidos') }}" class="button">
+                <div class="circle">3</div>
+                <span>Cargar Pedidos</span>
+            </a>
+            <a href="{{ url_for('volver') }}" class="button">
+                <div class="circle">🔙</div>
+                <span>Volver al Menú</span>
+            </a>
+        </div>
+        <div class="main">
+            <h2>Cargar Pedidos</h2>
+            <form action="{{ url_for('agregar_pedido') }}" method="POST">
+                <label for="ClienteID">Seleccionar Cliente:</label>
+                <select id="ClienteID" name="ClienteID" required>
+                    {% for cliente in Clientes %}
+                        <option value="{{ cliente[0] }}">{{ cliente[1] }} {{ cliente[2] }}</option>
+                    {% endfor %}
+                </select>
+
+                <h3>Productos:</h3>
+                <div id="productos-container">
+                    <div class="producto-row">
+                        <label for="ProductoID">Producto:</label>
+                        <select name="ProductoID[]" required>
+                            {% for producto in Productos %}
+                                <option value="{{ producto[0] }}">{{ producto[1] }} - ${{ producto[2] }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="Cantidad">Cantidad:</label>
+                        <input type="number" name="Cantidad[]" min="1" required>
+                        <button type="button" onclick="agregarProducto()">Agregar Producto</button>
+                    </div>
+                </div>
+
+                <input type="submit" value="Agregar Pedido">
+            </form>
+
+            <h3>Lista de Pedidos:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Pedido</th>
+                        <th>Cliente</th>
+                        <th>Productos</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in Pedidos %}
+                        <tr>
+                            <td>{{ pedido[0] }}</td>
+                            <td>{{ pedido[1] }} {{ pedido[2] }}</td>
+                            <td>
+                                <ul>
+                                    {% for producto in pedido[3] %}
+                                        <li>{{ producto[0] }} (x{{ producto[1] }}) - ${{ producto[2] }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>
+                                <form action="{{ url_for('eliminar_pedido') }}" method="POST">
+                                    <input type="hidden" name="ID_Pedido" value="{{ pedido[0] }}">
+                                    <button type="submit" class="delete-button">Eliminar</button>
+                                </form>
+                                <a href="{{ url_for('modificar_pedido', pedido_id=pedido[0]) }}">Modificar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function agregarProducto() {
+            const container = document.getElementById('productos-container');
+            const nuevoProducto = document.querySelector('.producto-row').cloneNode(true);
+            nuevoProducto.querySelector('button').remove(); // Quitar botón duplicado
+            container.appendChild(nuevoProducto);
+        }
+    </script>
+</body>
+</html>

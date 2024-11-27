@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interfaz Clientes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="button">
+                <div class="circle">1</div>
+                <span>Cargar Clientes</span>
+            </div>
+            <div class="button">
+                <div class="circle">2</div>
+                <span>Cargar Pedidos</span>
+            </div>
+            <div class="button">
+                <div class="circle">3</div>
+                <span>Cargar Productos</span>
+            </div>
+            <a href="{{ url_for('volver') }}" class="button">
+                <div class="circle">🔙</div>
+                <span>Volver al Menú</span>
+            </a>
+        </div>
+        <div class="main">
+            <h2>Cargar Clientes</h2>
+            <form action="{{ url_for('agregar_clientes')}}" method="POST" class="client-form">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="Nombre" required>
+                <label for="apellido">Apellido:</label>
+                <input type="text" id="apellido" name="Apellido" required>
+                <label for="telefono">Teléfono:</label>
+                <input type="tel" id="telefono" name="Telefono" required>
+                <input type="submit" value="Agregar">
+            </form>
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar clientes...">
+                <button>🔍</button>
+            </div>
+            <h1>Lista de clientes:</h1>
+            <table class="client-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in Clientes %}
+                        <tr>
+                            {% for atributo in cliente %}
+                                <td>{{ atributo }}</td>
+                            {% endfor %}
+                            <td>
+                                <form action="{{ url_for('eliminar_cliente') }}" method="POST" class="delete-form">
+                                    <input type="hidden" name="ID" value="{{ cliente[0] }}">
+                                    <button type="submit" class="delete-button">Eliminar</button>
+                                </form>
+                                <button class="modify-button" onclick="openModifyModal('{{ cliente[0] }}', '{{ cliente[1] }}', '{{ cliente[2] }}', '{{ cliente[3] }}')">Modificar</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="modifyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModifyModal()">&times;</span>
+            <h2>Modificar Cliente</h2>
+            <form action="{{ url_for('modificar_cliente') }}" method="POST">
+                <input type="hidden" id="modificar-id" name="ID">
+                <label for="modificar-nombre">Nombre:</label>
+                <input type="text" id="modificar-nombre" name="Nombre" required>
+                <label for="modificar-apellido">Apellido:</label>
+                <input type="text" id="modificar-apellido" name="Apellido" required>
+                <label for="modificar-telefono">Teléfono:</label>
+                <input type="tel" id="modificar-telefono" name="Telefono" required>
+                <input type="submit" value="Modificar">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModifyModal(id, nombre, apellido, telefono) {
+            document.getElementById('modificar-id').value = id;
+            document.getElementById('modificar-nombre').value = nombre;
+            document.getElementById('modificar-apellido').value = apellido;
+            document.getElementById('modificar-telefono').value = telefono;
+            document.getElementById('modifyModal').style.display = 'block';
+        }
+
+        function closeModifyModal() {
+            document.getElementById('modifyModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
